@@ -20,7 +20,7 @@ export default function App() {
   const [history, setHistory] = useState<req[]>([]);
   useEffect(()=>{
     (async()=>{
-      const requests = await axios.get("http://localhost:3000/getAllHistory");
+      const requests = await axios.get("/api/getAllHistory");
       console.log(requests);
       setHistory(requests.data);
 
@@ -63,7 +63,7 @@ export default function App() {
       console.log(res);
     }
 
-    axios.post("http://localhost:3000/addToHistory",{
+    axios.post("/api/addToHistory",{
       reqMethod:method,
       url:url,
       reqBody:requestBody,      

@@ -17,29 +17,15 @@ const cors_1 = __importDefault(require("cors"));
 const db_1 = require("./db");
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
-const obj = {
-    a: 1, b: 2
-};
-const objArr = Array(obj);
-// for(let i = 0; i<objArr.length; i++){
-// console.log(objArr[i]);
-// 
-// }
 app.use(express_1.default.json());
-for (const prop in obj) {
-    console.log(`obj.${prop} = ${obj[prop]}`);
-}
-app.post("/sum", (req, res) => {
+app.post("/api/sum", (req, res) => {
     const { a, b } = req.body;
     console.log(a + b);
     res.json({
         sum: a + b
     });
 });
-app.post("/addToHistory", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    // setResponseBody(JSON.stringify(res));
-    // const [a,b,c] = req.body
-    // console.log(a,b,c);
+app.post("/api/addToHistory", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log(req.body);
     const { reqMethod, url, reqBody } = req.body;
     yield db_1.prisma.request.create({
@@ -47,27 +33,10 @@ app.post("/addToHistory", (req, res) => __awaiter(void 0, void 0, void 0, functi
             reqMethod, reqUrl: url, reqBody
         }
     });
-    // await prisma.request.create({
-    //     data:{
-    //       reqMethod:method==="get"?"get":"post",
-    //       reqUrl:url,
-    //       reqBody:requestBody
-    //     }
-    //   })
 }));
-app.get("/getAllHistory", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    // setResponseBody(JSON.stringify(res));
-    // const [a,b,c] = req.body
-    // console.log(a,b,c);
+app.get("/api/getAllHistory", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const response = yield db_1.prisma.request.findMany();
     res.json(response);
-    // await prisma.request.create({
-    //     data:{
-    //       reqMethod:method==="get"?"get":"post",
-    //       reqUrl:url,
-    //       reqBody:requestBody
-    //     }
-    //   })
 }));
 app.listen(3000, () => {
     console.log(("hello world"));
