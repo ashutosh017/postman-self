@@ -6,8 +6,8 @@ export default defineConfig({
   plugins: [react()],
   server:{
     proxy:{
-      '/api':"https://postman-self.vercel.app"
-      
+      '/api':"https://postman-self-backend.vercel.app/"
+
     }
   }
 })
