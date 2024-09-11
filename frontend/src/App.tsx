@@ -11,6 +11,8 @@ interface req{
   reqUrl:string,
   reqBody:string
 }
+const backendUrl = "https://postman-self.onrender.com"
+
 export default function App() {
   const [method, setMethod] = useState("get");
   const [url, seturl] = useState("");
@@ -20,7 +22,7 @@ export default function App() {
   const [history, setHistory] = useState<req[]>([]);
   useEffect(()=>{
     (async()=>{
-      const requests = await axios.get("/api/getAllHistory");
+      const requests = await axios.get(`${backendUrl}/api/getAllHistory`);
       console.log(requests);
       setHistory(requests.data);
 
@@ -63,7 +65,7 @@ export default function App() {
       console.log(res);
     }
 
-    axios.post("/api/addToHistory",{
+    axios.post(`${backendUrl}/api/addToHistory`,{
       reqMethod:method,
       url:url,
       reqBody:requestBody,      
