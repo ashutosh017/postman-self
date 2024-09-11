@@ -1,6 +1,10 @@
 import express from 'express'
 import cors from 'cors'
-import { prisma } from './db';
+import { prisma } from './db'
+import 'dotenv/config'
+
+const backendUrl = process.env.BACKEND_URL;
+console.log(backendUrl);
 
 const app = express();
 app.use(cors())
@@ -9,7 +13,7 @@ app.use(cors())
 app.use(express.json())
 
 
-app.post("/api/sum",(req,res)=>{
+app.post(`${backendUrl}/api/sum`,(req,res)=>{
     const {a,b}:{a:number,b:number} = req.body
     console.log(a+b);
     res.json({
@@ -19,7 +23,7 @@ app.post("/api/sum",(req,res)=>{
 
 })
 
-app.post("/api/addToHistory", async(req,res)=>{
+app.post(`${backendUrl}/api/addToHistory,`,async(req,res)=>{
         console.log(req.body);
         const {reqMethod, url, reqBody} = req.body
         await prisma.request.create({
@@ -29,7 +33,7 @@ app.post("/api/addToHistory", async(req,res)=>{
         })
 
 })
-app.get("/api/getAllHistory", async(req,res)=>{
+app.get(`${backendUrl}/api/getAllHistory`, async(req,res)=>{
         const response = await prisma.request.findMany();
         res.json(response);
 })

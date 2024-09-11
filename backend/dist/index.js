@@ -15,17 +15,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const db_1 = require("./db");
+require("dotenv/config");
+const backendUrl = process.env.BACKEND_URL;
+console.log(backendUrl);
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
-app.post("/api/sum", (req, res) => {
+app.post(`${backendUrl}/api/sum`, (req, res) => {
     const { a, b } = req.body;
     console.log(a + b);
     res.json({
         sum: a + b
     });
 });
-app.post("/api/addToHistory", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.post(`${backendUrl}/api/addToHistory,`, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log(req.body);
     const { reqMethod, url, reqBody } = req.body;
     yield db_1.prisma.request.create({
@@ -34,7 +37,7 @@ app.post("/api/addToHistory", (req, res) => __awaiter(void 0, void 0, void 0, fu
         }
     });
 }));
-app.get("/api/getAllHistory", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.get(`${backendUrl}/api/getAllHistory`, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const response = yield db_1.prisma.request.findMany();
     res.json(response);
 }));
