@@ -15,32 +15,85 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const db_1 = require("./db");
-require("dotenv/config");
-const backendUrl = process.env.BACKEND_URL;
-console.log(backendUrl);
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
-app.post(`${backendUrl}/api/sum`, (req, res) => {
+app.get("/", (req, res) => {
+    const ipAddress = req.ip;
+    res.send(`Your IP address is: ${ipAddress}`);
+});
+app.post("/api/sum", (req, res) => {
     const { a, b } = req.body;
     console.log(a + b);
     res.json({
-        sum: a + b
+        sum: a + b,
     });
 });
-app.post(`${backendUrl}/api/addToHistory,`, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.post("/api/addToHistory", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log(req.body);
-    const { reqMethod, url, reqBody } = req.body;
-    yield db_1.prisma.request.create({
-        data: {
-            reqMethod, reqUrl: url, reqBody
+    const { reqMethod, reqUrl, reqBody, reqParams, reqHeaders } = req.body;
+    let userId = req.get("postman-user-id");
+    console.log("userId", userId);
+    if (userId) {
+        const user = yield db_1.prisma.user.findUnique({
+            where: {
+                id: userId,
+            },
+            include: {
+                userHistory: true,
+            },
+        });
+        if (!user) {
+            yield db_1.prisma.user.create({
+                data: {
+                    id: userId,
+                    userHistory: {
+                        create: {
+                            reqMethod,
+                            reqUrl,
+                            reqBody,
+                            reqParams,
+                            reqHeaders
+                        },
+                    },
+                },
+            });
         }
-    });
+        else {
+            yield db_1.prisma.user.update({
+                where: {
+                    id: userId,
+                },
+                data: {
+                    userHistory: {
+                        create: {
+                            reqMethod,
+                            reqUrl,
+                            reqBody,
+                            reqParams,
+                            reqHeaders
+                        },
+                    },
+                },
+            });
+        }
+    }
 }));
-app.get(`${backendUrl}/api/getAllHistory`, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const response = yield db_1.prisma.request.findMany();
-    res.json(response);
+app.get("/api/getAllHistory", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = req.get("postman-user-id");
+    if (userId) {
+        const user = yield db_1.prisma.user.findUnique({
+            where: {
+                id: userId,
+            },
+            include: {
+                userHistory: true,
+            },
+        });
+        console.log("user history: ", user === null || user === void 0 ? void 0 : user.userHistory);
+        res.json(user === null || user === void 0 ? void 0 : user.userHistory);
+    }
 }));
 app.listen(3000, () => {
-    console.log(("hello world"));
+    console.log("hello world");
 });

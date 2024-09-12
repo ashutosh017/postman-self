@@ -1,39 +1,90 @@
-import express from 'express'
-import cors from 'cors'
-import { prisma } from './db';
+import express from "express";
+import cors from "cors";
+import { prisma } from "./db";
 
 const app = express();
-app.use(cors())
+app.use(cors());
 
+app.use(express.json());
 
-app.use(express.json())
+app.get("/", (req, res) => {
+  const ipAddress = req.ip;
+  res.send(`Your IP address is: ${ipAddress}`);
+});
+app.post("/api/sum", (req, res) => {
+  const { a, b }: { a: number; b: number } = req.body;
+  console.log(a + b);
+  res.json({
+    sum: a + b,
+  });
+});
 
+app.post("/api/addToHistory", async (req, res) => {
+  console.log(req.body);
+  const { reqMethod, reqUrl, reqBody, reqParams, reqHeaders } = req.body;
+  let userId = req.get("postman-user-id")
+  console.log("userId",userId);
+  if (userId) {
+    const user = await prisma.user.findUnique({
+        where: {
+          id: userId,
+        },
+        include: {
+          userHistory: true,
+        },
+      });
+    if(!user){
+        await prisma.user.create({
+            data: {
+              id: userId,
+              userHistory: {
+                create: {
+                  reqMethod,
+                  reqUrl,
+                  reqBody,
+                  reqParams,
+                  reqHeaders
+                },
+              },
+            },
+          });
+    }
+    else{
+        await prisma.user.update({
+            where: {
+              id: userId,
+            },
+            data: {
+              userHistory: {
+                create: {
+                  reqMethod,
+                  reqUrl,
+                  reqBody,
+                  reqParams,
+                  reqHeaders
+                },
+              },
+            },
+          });
+    }
+  }
+});
+app.get("/api/getAllHistory", async (req, res) => {
+const userId = req.get("postman-user-id");
+  if (userId) {
+    const user = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+      include: {
+        userHistory: true,
+      },
+    });
+    console.log("user history: ", user?.userHistory);
+    res.json(user?.userHistory);
+  }
+});
 
-app.post("/api/sum",(req,res)=>{
-    const {a,b}:{a:number,b:number} = req.body
-    console.log(a+b);
-    res.json({
-        sum:a+b
-    })
-
-
-})
-
-app.post("/api/addToHistory", async(req,res)=>{
-        console.log(req.body);
-        const {reqMethod, url, reqBody} = req.body
-        await prisma.request.create({
-            data:{
-                reqMethod,reqUrl:url,reqBody
-            }
-        })
-
-})
-app.get("/api/getAllHistory", async(req,res)=>{
-        const response = await prisma.request.findMany();
-        res.json(response);
-})
-
-app.listen(3000,()=>{
-    console.log(("hello world"));
-})
+app.listen(3000, () => {
+  console.log("hello world");
+});

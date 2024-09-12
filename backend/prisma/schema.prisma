@@ -13,11 +13,20 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User{
+  id                String              @unique @default(uuid())
+  userHistory       Request[]       
+}
+
 model Request {
-  id          String          @id @default(uuid())         
-  reqMethod   HttpMehthod     
-  reqUrl      String          
-  reqBody     String
+  id                String              @id @default(uuid()) 
+  userId            String
+  user              User                @relation(fields:[userId],references: [id])     
+  reqMethod         HttpMehthod     
+  reqUrl            String               
+  reqParams         String              
+  reqHeaders        String              
+  reqBody           String
 }
 
 enum HttpMehthod {
