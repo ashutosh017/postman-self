@@ -3,7 +3,7 @@ import cors from "cors";
 import { prisma } from "./db";
 
 const app = express();
-app.use(cors({origin:"https://postman-self.vercel.app/"}));
+app.use(cors());
 
 app.use(express.json());
 
