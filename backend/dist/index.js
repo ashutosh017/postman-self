@@ -16,7 +16,7 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const db_1 = require("./db");
 const app = (0, express_1.default)();
-app.use((0, cors_1.default)());
+app.use((0, cors_1.default)({ origin: "https://postman-self.vercel.app/" }));
 app.use(express_1.default.json());
 app.get("/", (req, res) => {
     const ipAddress = req.ip;
@@ -92,6 +92,9 @@ app.get("/api/getAllHistory", (req, res) => __awaiter(void 0, void 0, void 0, fu
         });
         console.log("user history: ", user === null || user === void 0 ? void 0 : user.userHistory);
         res.json(user === null || user === void 0 ? void 0 : user.userHistory);
+    }
+    else {
+        res.send("There's no userId provided: " + userId);
     }
 }));
 app.listen(3000, () => {

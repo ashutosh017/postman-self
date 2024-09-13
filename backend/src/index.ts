@@ -83,6 +83,9 @@ const userId = req.get("postman-user-id");
     console.log("user history: ", user?.userHistory);
     res.json(user?.userHistory);
   }
+  else{
+    res.send("There's no userId provided: "+userId)
+  }
 });
 
 app.listen(3000, () => {
