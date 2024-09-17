@@ -35,7 +35,7 @@ app.post("/api/addToHistory", (req, res) => __awaiter(void 0, void 0, void 0, fu
     console.log(req.body);
     const { reqMethod, reqUrl, reqBody, reqParams, reqHeaders } = req.body;
     let userId = req.get("postman-user-id");
-    console.log("userId", userId);
+    // console.log("userId",userId);
     if (userId) {
         const user = yield db_1.prisma.user.findUnique({
             where: {
