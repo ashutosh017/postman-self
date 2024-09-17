@@ -2,6 +2,8 @@ import express from "express";
 import cors from "cors";
 import { prisma } from "./db";
 
+const PORT = process.env.PORT ?? 3000;
+
 const app = express();
 app.use(cors());
 
@@ -23,7 +25,7 @@ app.post("/api/addToHistory", async (req, res) => {
   console.log(req.body);
   const { reqMethod, reqUrl, reqBody, reqParams, reqHeaders } = req.body;
   let userId = req.get("postman-user-id")
-  console.log("userId",userId);
+  // console.log("userId",userId);
   if (userId) {
     const user = await prisma.user.findUnique({
         where: {
@@ -88,6 +90,6 @@ const userId = req.get("postman-user-id");
   }
 });
 
-app.listen(3000, () => {
-  console.log("hello world");
+app.listen(PORT, () => {
+  console.log("app is listening on port: ",PORT);
 });

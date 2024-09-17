@@ -14,7 +14,7 @@ interface req {
   reqParams: string,
   reqHeaders: string
 }
-const backendUrl = "https://postman-self.onrender.com"
+const backendUrl = "https://postman-self.onrender.com";
 // const backendUrl = "http://localhost:3000";
 
 export default function App() {

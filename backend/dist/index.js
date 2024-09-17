@@ -11,10 +11,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const db_1 = require("./db");
+const PORT = (_a = process.env.PORT) !== null && _a !== void 0 ? _a : 3000;
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
@@ -97,6 +99,6 @@ app.get("/api/getAllHistory", (req, res) => __awaiter(void 0, void 0, void 0, fu
         res.send("There's no userId provided: " + userId);
     }
 }));
-app.listen(3000, () => {
-    console.log("hello world");
+app.listen(PORT, () => {
+    console.log("app is listening on port: ", PORT);
 });
