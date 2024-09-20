@@ -14,8 +14,7 @@ interface req {
   reqParams: string,
   reqHeaders: string
 }
-const backendUrl = "https://postman-self.onrender.com";
-// const backendUrl = "http://localhost:3000";
+const backendUrl = import.meta.env.VITE_BACKEND_URL
 
 export default function App() {
   const [method, setMethod] = useState("get");
@@ -25,7 +24,9 @@ export default function App() {
   const [headers, setHeaders] = useState("");
   const [params, setParams] = useState("");
   const [history, setHistory] = useState<req[]>([]);
+  console.log("HISTORY: ",history);
   useEffect(() => {
+   if(backendUrl){
     (async () => {
       const userId = localStorage.getItem("postman-user-id");
       if (userId) {
@@ -34,10 +35,14 @@ export default function App() {
             "postman-user-id": userId,
           },
         });
-        console.log(userHistory);
+        // if(userHistory.data.isString)
+        // console.log(userHistory),setHistory([])
+        // if(!userHistory.data.isString)
+
         setHistory(userHistory.data);
       }
     })();
+   }
   }, []);
 
   const handleSubmit = async () => {
